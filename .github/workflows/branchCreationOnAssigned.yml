@@ -1,0 +1,32 @@
+
+name: Create Issue Branch
+
+# This action is now triggered when an issue is assigned.
+on:
+  issues:
+    types: [assigned]
+
+# Define a single job for this workflow
+jobs:
+  create_branch:
+    # Set the permissions for the GITHUB_TOKEN
+    permissions:
+      issues: write # Allows commenting on the issue
+      contents: write # Allows pushing the new branch
+
+    # The job will run on the latest Ubuntu runner
+    runs-on: ubuntu-latest
+
+    # Define the steps for the job
+    steps:
+      - name: Create an issue branch
+        # Use a pre-built action to handle the branch creation
+        # We are using robv-oss/actions-create-issue-branch@v2.2.0
+        uses: robv-oss/actions-create-issue-branch@v2.2.0
+
+        # Pass inputs to the action
+        with:
+          # Customize the branch name using a template.
+          # The default is 'issue-${{ issue.number }}-${{ issue.title }}'
+          # This example uses a slightly different format for a more "feature branch" feel.
+          branchName: 'feature/${{ issue.number }}-${{ issue.title }}'
