@@ -1,0 +1,54 @@
+name: Create Branch from Issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Extract type, title, and ID
+      - name: Extract data
+        id: extract
+        run: |
+          title="${{ github.event.issue.title }}"
+          type=$(echo "$title" | grep -Eo "(BUG|TASK|FEATURE)" || echo "TASK")
+          issue_number=${{ github.event.issue.number }}
+
+          # Remove the type word from the title and replace spaces with underscores
+          clean_title=$(echo "$title" | sed -E "s/(BUG|TASK|FEATURE)[: ]*//I" | tr ' ' '_' | tr -cd '[:alnum:]_')
+
+          # Limit to 50 chars to avoid overly long branch names
+          clean_title=$(echo "$clean_title" | cut -c1-50)
+
+          branch_name="GHS-${type}-${clean_title}-${issue_number}"
+
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+          echo "type=$type" >> $GITHUB_OUTPUT
+          echo "clean_title=$clean_title" >> $GITHUB_OUTPUT
+          echo "issue_number=$issue_number" >> $GITHUB_OUTPUT
+
+      # Step 2: Create the branch in GitHub
+      - name: Create branch
+        uses: peter-evans/create-branch@v4
+        with:
+          branch: ${{ steps.extract.outputs.branch_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 3: Post a comment with a clickable branch link
+      - name: Comment on issue
+        run: |
+          branch_name="${{ steps.extract.outputs.branch_name }}"
+          issue_number="${{ steps.extract.outputs.issue_number }}"
+
+          comment="🚀 **Branch Created Automatically**  
+          Branch: \`${branch_name}\`  
+          [View Branch in GitHub](https://github.com/${{ github.repository }}/tree/${branch_name})"
+
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${issue_number}/comments \
+            -d "{\"body\":\"$comment\"}"
