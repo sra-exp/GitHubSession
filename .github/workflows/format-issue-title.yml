@@ -1,0 +1,44 @@
+name: Format Issue Title
+
+on:
+  issues:
+    types: [opened, labeled, unlabeled]
+
+jobs:
+  format-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Format Issue Title
+        id: format-title
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(label => label.name);
+            const issueNumber = issue.number;
+            const originalTitle = issue.title;
+
+            // Check if title is already in the correct format
+            if (originalTitle.startsWith('GHS-')) {
+              console.log('Title is already formatted. Skipping.');
+              return;
+            }
+
+            let prefix = 'GHS-';
+            if (labels.includes('bug')) {
+              prefix += 'Bug-';
+            } else if (labels.includes('feature')) {
+              prefix += 'Feature-';
+            } else if (labels.includes('task')) {
+              prefix += 'Task-';
+            }
+
+            // Remove existing prefix from the title for consistency
+            const newTitle = `${prefix}${originalTitle.replace(/^GHS-(Bug|Feature|Task)-/, '')}-${issueNumber}`;
+            
+            github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              title: newTitle
+            });

@@ -1,0 +1,12 @@
+name: ✅ Task
+about: A small, actionable task.
+title: "GHS-Task-"
+labels: ["task"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the task.
+    validations:
+      required: true
