@@ -1,0 +1,34 @@
+name: Fix Issue Title
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  rename-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure issue title format
+        run: |
+          number=${{ github.event.issue.number }}
+          title="${{ github.event.issue.title }}"
+
+          # Extract type (BUG, TASK, FEATURE) from title, default to TASK if missing
+          type=$(echo "$title" | grep -Eo "(BUG|TASK|FEATURE)" || echo "TASK")
+
+          # Remove the type from the original title for clean formatting
+          clean_title=$(echo "$title" | sed -E "s/(BUG|TASK|FEATURE)//I" | xargs)
+
+          # Replace spaces with underscores for the middle part
+          formatted_title=$(echo "$clean_title" | tr ' ' '_')
+
+          # Final new title format: GHS-TYPE-Formatted_Title-ID
+          new_title="GHS-${type}-${formatted_title}-${number}"
+
+          echo "Renaming issue to: $new_title"
+
+          # Update issue title using GitHub API
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${number} \
+            -d "{\"title\":\"$new_title\"}"
