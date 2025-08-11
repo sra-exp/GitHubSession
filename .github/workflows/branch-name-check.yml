@@ -1,0 +1,18 @@
+name: Branch Name Check
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  validate-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name format
+        run: |
+          branch="${GITHUB_REF##*/}"
+          echo "Branch: $branch"
+          if [[ ! "$branch" =~ ^GHS-(BUG|TASK|FEATURE)-[0-9]+$ ]]; then
+            echo "❌ Branch name must follow: GHS-(BUG|TASK|FEATURE)-<IssueNumber>"
+            exit 1
+          fi
