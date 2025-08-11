@@ -1,6 +1,6 @@
 name: Task
 description: Create a general task or a maintenance item.
-title: "GHS-Task: "
+title: "GHS-TASK: "
 labels: ["task", "triage"]
 assignees:
   - # Optional: Add a default assignee username here

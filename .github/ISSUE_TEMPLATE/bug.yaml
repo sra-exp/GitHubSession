@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report a reproducible bug or an unexpected behavior.
-title: "GHS-Bug: "
+title: "GHS-BUG: "
 labels: ["bug", "triage"]
 assignees:
   - # Optional: Add a default assignee username here
