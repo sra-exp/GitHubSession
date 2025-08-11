@@ -1,24 +1,38 @@
-name: 🐛 Bug Report
-about: Report a problem or an issue with the project.
-title: "GHS-Bug-"
-labels: ["bug"]
+name: Bug Report
+description: Report a reproducible bug or an unexpected behavior.
+title: "GHS-Bug: "
+labels: ["bug", "triage"]
+assignees:
+  - # Optional: Add a default assignee username here
 body:
   - type: markdown
     attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
-  - type: textarea
-    id: description
+      value: "### Thanks for taking the time to file a bug report!"
+  - type: dropdown
+    id: severity
     attributes:
-      label: Description
-      description: A clear and concise description of the bug.
+      label: Severity
+      description: How does this bug affect the user?
+      options:
+        - Critical (blocks core functionality)
+        - High (significantly impacts user experience)
+        - Medium (minor inconvenience)
+        - Low (cosmetic or trivial)
     validations:
       required: true
   - type: textarea
-    id: steps
+    id: description
     attributes:
-      label: Steps to reproduce
-      description: Provide detailed steps to reproduce the behavior.
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior.
       placeholder: |
         1. Go to '...'
         2. Click on '....'
@@ -26,3 +40,17 @@ body:
         4. See error
     validations:
       required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false

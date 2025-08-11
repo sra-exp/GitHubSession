@@ -1,67 +1,25 @@
-name: Bug Report
-description: Report a reproducible bug or an unexpected behavior.
-title: "[Bug]: "
-labels: ["bug", "triage"]
+name: Task
+description: Create a general task or a maintenance item.
+title: "GHS-Task: "
+labels: ["task", "triage"]
 assignees:
   - # Optional: Add a default assignee username here
 body:
-  - type: markdown
+  - type: textarea
+    id: task_description
     attributes:
-      value: "### Thanks for taking the time to file a bug report!"
-  - type: dropdown
-    id: severity
-    attributes:
-      label: Severity
-      description: How does this bug affect the user?
-      options:
-        - Critical (blocks core functionality)
-        - High (significantly impacts user experience)
-        - Medium (minor inconvenience)
-        - Low (cosmetic or trivial)
+      label: Task Description
+      description: "Please provide a clear description of the task."
+      placeholder: "Describe the task here..."
     validations:
       required: true
   - type: textarea
-    id: description
+    id: subtasks
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is.
-      placeholder: Tell us what you see!
-    validations:
-      required: true
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: To Reproduce
-      description: Steps to reproduce the behavior.
+      label: Subtasks (Optional)
+      description: "List any subtasks or steps that are part of this task."
       placeholder: |
-        1. Go to '...'
-        2. Click on '....'
-        3. Scroll down to '....'
-        4. See error
-    validations:
-      required: true
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-      description: A clear and concise description of what you expected to happen.
-    validations:
-      required: true
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Screenshots
-      description: If applicable, add screenshots to help explain your problem.
+        - [ ] Subtask 1
+        - [ ] Subtask 2
     validations:
       required: false
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment
-      description: "Please provide your environment details (e.g., OS, browser, etc.)."
-      value: |
-        - OS: 
-        - Browser:
-        - Version:
-    validations:
-      required: true
