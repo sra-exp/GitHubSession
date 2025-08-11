@@ -1,12 +1,67 @@
-name: ✅ Task
-about: A small, actionable task.
-title: "GHS-Task-"
-labels: ["task"]
+name: Bug Report
+description: Report a reproducible bug or an unexpected behavior.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - # Optional: Add a default assignee username here
 body:
+  - type: markdown
+    attributes:
+      value: "### Thanks for taking the time to file a bug report!"
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How does this bug affect the user?
+      options:
+        - Critical (blocks core functionality)
+        - High (significantly impacts user experience)
+        - Medium (minor inconvenience)
+        - Low (cosmetic or trivial)
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
-      label: Description
-      description: A clear and concise description of the task.
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: "Please provide your environment details (e.g., OS, browser, etc.)."
+      value: |
+        - OS: 
+        - Browser:
+        - Version:
     validations:
       required: true
