@@ -1,44 +1,34 @@
-name: Format Issue Title
+name: "🐞 Bug Report"
+description: "Report a bug so we can fix it."
+title: "[BUG] " # <-- This pre-fills the issue title with [BUG]
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug!  
+        Please fill out the details below.
 
-on:
-  issues:
-    types: [opened, labeled, unlabeled]
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe the bug"
+      description: "A clear and concise description of the problem."
+      placeholder: "What happened?"
 
-jobs:
-  format-title:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Format Issue Title
-        id: format-title
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const issue = context.payload.issue;
-            const labels = issue.labels.map(label => label.name);
-            const issueNumber = issue.number;
-            const originalTitle = issue.title;
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to reproduce"
+      description: "Tell us how to reproduce this bug."
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
 
-            // Check if title is already in the correct format
-            if (originalTitle.startsWith('GHS-')) {
-              console.log('Title is already formatted. Skipping.');
-              return;
-            }
-
-            let prefix = 'GHS-';
-            if (labels.includes('bug')) {
-              prefix += 'Bug-';
-            } else if (labels.includes('feature')) {
-              prefix += 'Feature-';
-            } else if (labels.includes('task')) {
-              prefix += 'Task-';
-            }
-
-            // Remove existing prefix from the title for consistency
-            const newTitle = `${prefix}${originalTitle.replace(/^GHS-(Bug|Feature|Task)-/, '')}-${issueNumber}`;
-            
-            github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issueNumber,
-              title: newTitle
-            });
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      description: "What you expected to happen."
