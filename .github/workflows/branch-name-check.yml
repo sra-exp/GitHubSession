@@ -1,3 +1,6 @@
+# This workflow checks if the branch name follows the required format.
+# It is triggered on every push or pull request to any branch.
+
 name: Check Branch Name
 
 on:
@@ -17,9 +20,13 @@ jobs:
           branch_name="${GITHUB_REF##*/}"
           echo "Branch name: $branch_name"
           
-          # Enforce pattern: GHS-BUG-<number> or GHS-TASK-<number> or GHS-FEATURE-<number>
-          if [[ ! "$branch_name" =~ ^GHS-(BUG|TASK|FEATURE)-[0-9]+$ ]]; then
-            echo "❌ Branch name '$branch_name' does not follow the required format: GHS-(BUG|TASK|FEATURE)-<number>"
+          # Enforce pattern:
+          # - GHS-BUG
+          # - GHS-TASK-<number>
+          # - GHS-FEATURE-<number>
+          if [[ ! "$branch_name" =~ ^GHS-(BUG|TASK|FEATURE)(-[0-9]+)?$ ]]; then
+            echo "❌ Branch name '$branch_name' does not follow the required format."
+            echo "Valid formats are GHS-BUG, GHS-TASK-<number>, or GHS-FEATURE-<number>."
             exit 1
           fi
           

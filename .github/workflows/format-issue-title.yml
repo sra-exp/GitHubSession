@@ -1,6 +1,5 @@
 # This workflow automatically creates a new branch when an issue is assigned.
-# The branch name is generated from the issue number and title, and now
-# includes a prefix based on the issue's labels.
+# The branch name is now generated without an issue number for all types of issues.
 
 name: Create Issue Branch
 
@@ -40,8 +39,10 @@ jobs:
             esac
           done
           
-          # Construct the full branch name and set it as a job output.
-          branch_name="${prefix}-${{ github.event.issue.number }}"
+          # Construct the full branch name.
+          # The issue number is no longer appended to any branch type.
+          branch_name="${prefix}"
+          
           echo "Branch name will be: $branch_name"
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 
