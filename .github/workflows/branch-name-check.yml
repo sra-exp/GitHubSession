@@ -1,74 +1,30 @@
-name: Create Issue Branch
+name: Create Issue Branch (Demo)
 
 on:
-  # Triggers the workflow only when an issue is assigned to a user
   issues:
     types: [assigned]
 
 jobs:
-  determine_branch_name:
-    runs-on: ubuntu-latest
-    outputs:
-      # Expose the final branch name for the next job
-      branch_name: ${{ steps.set_name.outputs.branch_name }}
-    steps:
-      - id: set_name
-        name: Set dynamic and unique branch name
-        run: |
-          # 1. Get necessary context variables
-          issue_number="${{ github.event.issue.number }}"
-          issue_title="${{ github.event.issue.title }}"
-          
-          # 2. Determine prefix based on the first word of the title
-          #    This logic is directly from your original request
-          type=$(echo "$issue_title" | awk '{print tolower($1)}')
-          
-          case "$type" in
-            bug)
-              prefix="GHS-BUG"
-              ;;
-            task)
-              prefix="GHS-TASK"
-              ;;
-            feature)
-              prefix="GHS-FEATURE"
-              ;;
-            *)
-              prefix="GHS-FEATURE"
-              ;;
-          esac
-
-          # 3. Create a clean, "slugified" version of the title:
-          #    - Convert to lowercase (tr '[:upper:]' '[:lower:]')
-          #    - Replace non-alphanumeric characters with dashes (sed)
-          #    - Remove leading/trailing dashes and squeeze multiple dashes
-          slugified_title=$(echo "$issue_title" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9]/_/g' -e 's/__*/-/g' -e 's/^-//' -e 's/-$//')
-          
-          # 4. Construct the final unique branch name
-          #    (e.g., GHS-BUG-45-fix-crash-on-logout)
-          branch_name="${prefix}-${issue_number}-${slugified_title}"
-          
-          echo "Branch name will be: $branch_name"
-          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
-
   create_branch:
-    needs: determine_branch_name # Ensure branch name is determined first
     runs-on: ubuntu-latest
     permissions:
-      contents: write # REQUIRED to push the new branch to the repository
+      contents: write
     steps:
-      - name: Checkout Repository
-        # We need to checkout the code to run Git commands against it
-        uses: actions/checkout@v4 
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Create and Push Issue Branch
+      - name: Configure git
         run: |
-          branch_name="${{ needs.determine_branch_name.outputs.branch_name }}"
-          
-          # Configure Git to use the built-in bot user
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          # Create and push the new branch based on the determined name
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create branch
+        run: |
+          branch_name="issue-${{ github.event.issue.number }}"
+          echo "Creating branch: $branch_name"
           git checkout -b "$branch_name"
-          git push -u origin "$branch_name"
+
+      - name: Push branch
+        run: |
+          branch_name="issue-${{ github.event.issue.number }}"
+          git push origin "$branch_name"
