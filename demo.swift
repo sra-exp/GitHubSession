@@ -5,5 +5,6 @@ class Demo {
   }
   func demo(){
     return 10
+    print()
   }
 }
