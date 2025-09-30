@@ -1,0 +1,30 @@
+name: Demo Basics Workflow
+
+# 1. WHEN TO RUN THE WORKFLOW
+on:
+  # Triggers the workflow when any push happens to any branch
+  push:
+  # Allows manual running from the 'Actions' tab (great for demos)
+  workflow_dispatch:
+
+# 2. THE JOBS TO BE EXECUTED
+jobs:
+  simple-greeting:
+    # A display name for the job
+    name: Say Hello to the World
+
+    # Specifies the runner environment (virtual machine) to use
+    runs-on: ubuntu-latest
+
+    # 3. THE STEPS IN THE JOB
+    steps:
+      # Step 1: Prints a static message
+      - name: Print Greeting
+        # 'run' executes a shell command on the runner
+        run: echo "Hello! This is a simple GitHub Actions demonstration."
+
+      # Step 2: Demonstrates using a built-in context variable
+      - name: Show Time and Runner Info
+        run: |
+          echo "Current time is $(date)"
+          echo "This job is running on a ${{ runner.os }} machine."
