@@ -1,0 +1,25 @@
+name: Check for Comments in PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-comments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check added code for comments
+        run: |
+          # Get diff of added lines only
+          added_lines=$(git diff origin/${{ github.base_ref }}...HEAD | grep '^+' | grep -v '+++')
+
+          # Look for comment markers
+          if echo "$added_lines" | grep -E '(^\+\s*//|^\+\s*#|^\+\s*/\*|^\+\s*\*)' > /dev/null; then
+            echo "✅ Found comments in added code."
+          else
+            echo "❌ No comments found in the added code."
+            exit 1
+          fi
