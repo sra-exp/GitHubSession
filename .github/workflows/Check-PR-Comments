@@ -10,13 +10,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # ensure full history is fetched
 
       - name: Check added code for comments
         run: |
-          # Get diff of added lines only
-          added_lines=$(git diff origin/${{ github.base_ref }}...HEAD | grep '^+' | grep -v '+++')
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+          echo "Head SHA: ${{ github.sha }}"
 
-          # Look for comment markers
+          # Get only added lines in the PR diff
+          added_lines=$(git diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^+' | grep -v '+++')
+
+          echo "Added lines:"
+          echo "$added_lines"
+
+          # Look for common comment patterns
           if echo "$added_lines" | grep -E '(^\+\s*//|^\+\s*#|^\+\s*/\*|^\+\s*\*)' > /dev/null; then
             echo "✅ Found comments in added code."
           else
