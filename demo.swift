@@ -3,5 +3,7 @@ import UIKit
 class Demo {
   init() {
   }
-  func demo(){}
+  func demo(){
+    return 10
+  }
 }
